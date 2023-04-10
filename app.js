@@ -1,32 +1,20 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const adminRoutes = require('./routes/admin');
+const userRoutes = require('./routes/user');
+const path = require('path');
 
-app.use(bodyParser.urlencoded({extended: false}));
-app.use('/add-product', (req, res, next) => {
-    res.send(`
-        <html>
-            <head>
-                <title>Add a new product</title>
-            </head>
-            <body>
-                <form action="/product" method="POST">
-                    <input type="text" name"productName">
-                    <input type="submit" value="save product">
-                </form> 
-            </body>
-        </html>
-    `)
-});
+app.set('view engine', 'pug');
+app.set('views', './views');
+ 
+app.use(express.urlencoded({extended: false}));
+app.use(bodyParser.json());
+app.use("/admin",adminRoutes);
+app.use("/user",userRoutes);
 
-app.post('/product', (req, res, next) => {
-    console.log(req.body);
-    res.redirect('/');
-});
-app.use("/",(req,res, next) => {
-    console.log("main url çalıştı");
-    res.send();
-})
+app.set('title', 'my site');
+
 app.listen(3000, () => {
     console.log("listening on 3000 port");
 });
