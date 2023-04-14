@@ -2,18 +2,23 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'pug');
 app.set('views', './views');
-
-const adminRoutes = require('./routes/admin');
-const userRoutes = require('./routes/user');
 app.use(express.urlencoded({extended: false}));
 app.use(bodyParser.json());
-app.use("/admin",adminRoutes);
+
+
+
+const admin = require('./routes/admin');
+const userRoutes = require('./routes/user');
+
+
+app.use("/admin",admin.router);
 app.use(userRoutes);
 
 app.use((req, res) => {
-    res.status(404).render('404');
+    res.status(404).render('404', {title: "ERROR!"});
 })
 
 // bu kod penceresi terminal üzerinden açılmıştır.
