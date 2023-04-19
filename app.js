@@ -10,16 +10,15 @@ app.use(bodyParser.json());
 
 
 
-const admin = require('./routes/admin');
-const userRoutes = require('./routes/user');
+const adminRouter = require('./routes/admin');
+const userRoutes = require('./routes/shop');
+const errorController = require('./controllers/error');
 
 
-app.use("/admin",admin.router);
+app.use("/admin", adminRouter);
 app.use(userRoutes);
 
-app.use((req, res) => {
-    res.status(404).render('404', {title: "ERROR!"});
-})
+app.use(errorController.get404Page);
 
 // bu kod penceresi terminal üzerinden açılmıştır.
 app.listen(3000, () => {
