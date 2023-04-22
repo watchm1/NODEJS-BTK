@@ -17,6 +17,12 @@ block content
             .col-sm-10
                 input(type="text", name="image" value=`${product.image}`).form-control#image
         .form-group.row
+            label(for="categoryId").col-sm-2 Category
+            .col-sm-10
+                select(name="categoryId").form-control#categoryId
+                    each category in categories
+                        option(value=`${category.id}` selected=category.id === product.categoryId) #{category.name}
+        .form-group.row
             label(for="description").col-sm-2 Description
             .col-sm-10
                 textarea.form-control(type="text", name="description" cols="30" rows="10") #{product.description}

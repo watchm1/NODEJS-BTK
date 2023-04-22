@@ -14,11 +14,18 @@ block content
         .form-group.row
             label(for="description").col-sm-2 Description
             .col-sm-10
-                input(type="text", name="description").form-control#description
+                textarea.form-control(type="text", name="description" cols="30" rows="10")
         .form-group.row
             label(for="image").col-sm-2 Image
             .col-sm-10
                 input(type="text", name="image").form-control#image
+        .form-group.row
+            label(for="categoryId").col-sm-2 Category
+            .col-sm-10
+                select(name="categoryId").form-control#categoryId
+                    option(value="-1") Select Category
+                    each category in categories
+                        option(value=`${category.id}`) #{category.name}
         .form-group.row
             .col-sm-10.offset-sm-2 
                 input(type="submit", value="Save Product").btn.btn-primary
