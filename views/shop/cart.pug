@@ -1,0 +1,31 @@
+extends ../layout/main-layout.pug
+
+block content
+    if (action!== 'undefined' && action === 'edit')
+        div.alert.alert-success The Product has been updated.
+    if (action!== 'undefined' && action === 'delete')
+        div.alert.alert-danger The Product has been deleted.
+    
+    if products.length > 0
+        table.table.table-bordered
+            thead
+                tr
+                    th(style= "width:100px") Image
+                    th Product Name
+                    th(style= "width:150px") Product Price
+                    th Quantity
+                    th(style= "width:133px")
+            tbody
+                each product in products
+                    tr 
+                        td
+                            img(src =`/img/${product.image}` width="80")
+                        td  #{product.name}
+                        td  #{product.price} TL
+                        td  #{product.cartItem.quantity}
+                        td
+                            form(action='/admin/delete-cartitem' method='POST')
+                                input(type='hidden' name='productId' value=`${product.id}`)
+                                button(type='submit').btn.btn-danger.btn-sm Delete
+    else 
+        h1 No Products

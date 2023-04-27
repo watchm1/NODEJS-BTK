@@ -10,4 +10,6 @@ mixin createProduct(product)
                    i.fas.fa-lira-sign #{product.price}
            .card-footer.text-center
                 a(href=`/products/${product.id}`).btn.btn-outline-primary.btn-sm Details
-                a(href="#").btn.btn-outline-primary.btn-sm.ml-3 Add to Cart
+                form(action='/cart' method="POST")
+                  input(type='hidden' name="productId" value=`${product.id}`)
+                  button(type='submit').btn.btn-outline-primary.btn-sm.ml-3 Add to Cart

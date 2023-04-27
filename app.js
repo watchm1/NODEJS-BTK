@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const path = require('path');
+const sequelize = require('./utilities/database');
+const User = require('./models/user');
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'pug');
 app.set('views', './views');
@@ -13,14 +16,55 @@ app.use(bodyParser.json());
 const adminRouter = require('./routes/admin');
 const userRoutes = require('./routes/shop');
 const errorController = require('./controllers/error');
+const Product = require('./models/product');
+const Category = require('./models/category');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cartItem');
 
 
+app.use((req, res, next) => {
+    User.findByPk(1).then((user) => {
+        req.user = user;
+        next()
+    }).catch((error) => {console.log(error)});
+})
 app.use("/admin", adminRouter);
 app.use(userRoutes);
 
-app.use(errorController.get404Page);
 
+app.use(errorController.get404Page);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, {through: CartItem});
+Product.belongsToMany(Cart, {through: CartItem});
 // bu kod penceresi terminal üzerinden açılmıştır.
+Product.belongsTo(Category, {foreignKey: {allowNull: false}})
+Category.hasMany(Product);
+Product.belongsTo(User);
+User.hasMany(Product);
+let _user;
+sequelize.sync().then(() => {
+    User.findByPk(1).then((user) => {
+        if(!user)
+        {
+            return User.create({
+                name: 'muhammedali',
+                email: 'm.ali.software.dev@gmail.com',
+            });
+        }
+        return user;
+    }).then((user) => {
+        _user = user;
+        return user.getCart();
+    }).then((cart) => {
+        if(!cart)
+        {
+            _user.createCart();
+        }
+        return cart;
+    })
+
+}).catch((error) => {console.log(error)});
 app.listen(3000, () => {
     console.log("listening on 3000 port");
 });

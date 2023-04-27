@@ -8,6 +8,7 @@ router.get("/products",shopController.getProducts);
 router.get("/products/:productId",shopController.getProduct);
 router.get("/categories/:categoryId",shopController.getProductsByCategoryId);
 router.get('/details', shopController.getProductDetails);
-router.get('/card', shopController.getCart);
+router.get('/cart', shopController.getCart);
+router.post('/cart', shopController.postCart);
 router.get('/orders', shopController.getOrders);
 module.exports = router;
