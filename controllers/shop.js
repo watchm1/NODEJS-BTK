@@ -70,9 +70,7 @@ exports.postCart = (req, res, next) => {
         .then((products) => {
             let product;
             if(products.length > 0)
-            {
                 product = products[0];
-            }
             if(product)
             {
                 quantity += product.cartItem.quantity;
@@ -85,10 +83,9 @@ exports.postCart = (req, res, next) => {
                 through: {
                     quantity: quantity
                 }
-            });
-        })
-        .then(() => {
-            res.redirect('/cart');
+            }).then(() => {
+                res.redirect('/cart');
+            });  
         })
     }).catch(error => console.log(error));
 }
@@ -111,4 +108,16 @@ exports.getProductsByCategoryId = (req, res, next) => {
             })
         }).catch((err) => {console.log(err)});       
     }).catch((err) => console.log(err));    
+}
+
+exports.postCartItemDelete = (req, res, next) => {
+    const productId = req.body.productId;
+    req.user.getCart().then((cart) => {
+        return cart.getProducts({where: {id: productId}});
+    }).then((products) => {
+        const product = products[0];
+        return product.cartItem.destroy();
+    }).then(() => {
+        res.redirect('/cart');
+    })
 }
