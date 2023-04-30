@@ -20,7 +20,8 @@ const Product = require('./models/product');
 const Category = require('./models/category');
 const Cart = require('./models/cart');
 const CartItem = require('./models/cartItem');
-
+const Order = require('./models/order');
+const OrderItem = require('./models/orderItem');
 
 app.use((req, res, next) => {
     User.findByPk(1).then((user) => {
@@ -33,15 +34,25 @@ app.use(userRoutes);
 
 
 app.use(errorController.get404Page);
+
 User.hasOne(Cart);
 Cart.belongsTo(User);
 Cart.belongsToMany(Product, {through: CartItem});
+
 Product.belongsToMany(Cart, {through: CartItem});
-// bu kod penceresi terminal üzerinden açılmıştır.
 Product.belongsTo(Category, {foreignKey: {allowNull: false}})
 Category.hasMany(Product);
+
 Product.belongsTo(User);
 User.hasMany(Product);
+
+Order.belongsTo(User);
+User.hasMany(Order);
+
+Order.belongsToMany(Product, {through: OrderItem});
+Product.belongsToMany(Order, {through: OrderItem});
+
+
 let _user;
 sequelize.sync().then(() => {
     User.findByPk(1).then((user) => {
@@ -62,6 +73,17 @@ sequelize.sync().then(() => {
             _user.createCart();
         }
         return cart;
+    }).then(() => {
+        Category.count().then((count) => {
+            if(count === 0)
+            {
+                Category.bulkCreate([
+                    {name: "Telefon", description: 'telefon kategorisi'},
+                    {name: "Bilgisayar", description: 'bilgisayar kategorisi'},
+                    {name: "Elektronik", description: "elektronik kategorisi"}
+                ]);                
+            }
+        })
     })
 
 }).catch((error) => {console.log(error)});
