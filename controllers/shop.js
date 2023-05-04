@@ -144,13 +144,6 @@ exports.postCreateOrder = (req, res, next) => {
             }).catch((error) => console.log(error));
     }).then(() => {
         userCart.setProducts(null);
-    }).then(() => {
         res.redirect('/orders');
     }).catch((error => console.log(error)));
-
-
-    res.render('shop/orders', {
-        title: 'Orders',
-        path: '/orders'
-    })
 }
